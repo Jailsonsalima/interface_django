@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Executar Query</title>
+    <style>
+        table { border-collapse: collapse; width: 80%; margin-top: 20px; }
+        th, td { border: 1px solid #333; padding: 8px; text-align: left; }
+        th { background-color: #f2f2f2; }
+    </style>
+</head>
+<body>
+    <h1>Executar Query no Banco Distribuído</h1>
+    <form method="POST">
+        {% csrf_token %}
+        <label>Digite sua query SQL:</label>
+        <input type="text" name="query" required style="width: 400px;">
+        <button type="submit">Executar</button>
+    </form>
+
+    {% if resultado %}
+        <h3>Resposta do nó: {{ resultado.node }}</h3>
+
+        <table>
+            <thead>
+                <tr>
+                    {% if resultado.data and resultado.data.0 %}
+                        {% for col in resultado.data.0 %}
+                            <th>Coluna {{ forloop.counter }}</th>
+                        {% endfor %}
+                    {% else %}
+                        <th>Resultado</th>
+                    {% endif %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for linha in resultado.data %}
+                    <tr>
+                        {% for valor in linha %}
+                            <td>{{ valor }}</td>
+                        {% endfor %}
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
+
+    <p><a href="{% url 'home' %}">Voltar para Home</a></p>
+</body>
+</html>
